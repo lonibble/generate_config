@@ -1,9 +1,7 @@
 ---
 # vars file for gen-config
 switches:
-  - location: Bunker
-    
-    hostname: Leaf101
+  - hostname: Leaf101
     profile: leaf
     lb0_ip: 10.0.0.101
     lb0_mask: 255.255.255.255
@@ -30,17 +28,8 @@ switches:
         uplink_mask: 255.255.255.254
         uplink_spine_switch: Spine4
         uplink_spine_port: Ten1/0/1
-    vlans:
-      - vlan_number: 2100
-        vlan_name: x86_Servers
-        vlan_ip: 10.100.100.1
-        vlan_mask: 255.255.255.0
-      - vlan_number: 2110
-        vlan_name: Mainframe
-        vlan_ip: 10.100.110.1
-        vlan_mask: 255.255.255.0
     
-    hostname: Leaf102
+  - hostname: Leaf102
     profile: leaf
     lb0_ip: 10.0.0.102
     lb0_mask: 255.255.255.255
@@ -67,17 +56,8 @@ switches:
         uplink_mask: 255.255.255.254
         uplink_spine_switch: Spine4
         uplink_spine_port: Ten1/0/2
-    vlans:
-      - vlan_number: 2100
-        vlan_name: x86_Servers
-        vlan_ip: 10.100.100.1
-        vlan_mask: 255.255.255.0
-      - vlan_number: 2110
-        vlan_name: Mainframe
-        vlan_ip: 10.100.110.1
-        vlan_mask: 255.255.255.0
     
-    hostname: Leaf103
+  - hostname: Leaf103
     profile: leaf
     lb0_ip: 10.0.0.103
     lb0_mask: 255.255.255.255
@@ -104,17 +84,8 @@ switches:
         uplink_mask: 255.255.255.254
         uplink_spine_switch: Spine4
         uplink_spine_port: Ten1/0/3
-    vlans:
-      - vlan_number: 2100
-        vlan_name: x86_Servers
-        vlan_ip: 10.100.100.1
-        vlan_mask: 255.255.255.0
-      - vlan_number: 2110
-        vlan_name: Mainframe
-        vlan_ip: 10.100.110.1
-        vlan_mask: 255.255.255.0
     
-    hostname: Leaf104
+  - hostname: Leaf104
     profile: leaf
     lb0_ip: 10.0.0.104
     lb0_mask: 255.255.255.255
@@ -141,7 +112,9 @@ switches:
         uplink_mask: 255.255.255.254
         uplink_spine_switch: Spine4
         uplink_spine_port: Ten1/0/4
-    vlans:
+
+general:    
+  - vlans:
       - vlan_number: 2100
         vlan_name: x86_Servers
         vlan_ip: 10.100.100.1
@@ -150,3 +123,13 @@ switches:
         vlan_name: Mainframe
         vlan_ip: 10.100.110.1
         vlan_mask: 255.255.255.0
+
+  - routing:
+      - ospf_instance: 1
+        ospf_area: 0.0.0.0
+
+  - snmp:
+    asset_tag: ABAB1234
+    location: Bunker
+    contact: me@here.com, 555.555.1212
+
