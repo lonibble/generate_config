@@ -34,12 +34,12 @@ interface vlan {{ item.number }}
 ospf 1
  passive-interface default
  router-id {{ item.lb0_ip }}
- {{% for uplink in item.uplinks %}}
+ {% for uplink in item.uplinks %}
  no passive-interface {{ uplink.uplink_port }}
- {{% endfor %}}
- {{% for ip in item.vlans %}}
+ {% endfor %}
+ {% for ip in item.vlans %}
  network {{ ip.vlan_ip }} 255.255.255.255
- {{% endfor %}}
+ {% endfor %}
 
 # NTP Config
 ntp logging
@@ -47,9 +47,9 @@ ntp source mgmt0
 ntp authentication-key 1991 md5 iamanntppassword4sure!
 ntp trusted-key 1991
 ntp authenticate
-{{% for server in location[item.location].ntp_servers %}}
+{% for server in general.ntp_servers %}
 ntp server {{ server }} key 1991
-{{% endfor %}}
+{% endfor %}
 
 # SNMP Info Config
 snmp-server location {{ item.location }}
@@ -57,6 +57,6 @@ snmp-server contact {{ item.contact }}
 snmp-server ifindex persist
 snmp-server chassis-id {{ item.asset_tag }}
 
-{% for server in location[item.location].syslog_servers%}
+{% for server in general.syslog_servers %}
 logging host {{ server }}
 {% endfor %}
