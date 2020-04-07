@@ -1,4 +1,0 @@
----
-- name: generate leaf config
-  template: src=leaf.j2 dest=/Users/roys/configs/{{ item.hostname }}.cfg
-  with_items: routers

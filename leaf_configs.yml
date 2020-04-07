@@ -1,7 +1,0 @@
----
-- name: config creation
-  gather_facts: no
-  hosts: localhost
-
-  roles:
-    - leafs

@@ -1,0 +1,62 @@
+# hostname
+hostname {{ hostname|upper }}
+
+# loopback config
+interface loopback0
+ ip address {{ lb0_ip }} {{ lb0_mask }}
+
+# OOB management config
+interface mgmt0
+ ip address {{ mgmt_ip }} {{ mgmt_mask }}
+
+# Uplink config
+{% for uplink in uplinks %}
+interface {{ uplink.uplink_port }}
+ description {{ uplink.uplink_spine_switch|upper }} port {{ uplink.uplink_spine_port }}
+ no switchport
+ ip address {{ uplink.uplink_ip }} {{ uplink.uplink_mask }}
+{% endfor %}
+
+# vlan config
+{% for vlan in vlans %}
+vlan {{ vlan.vlan_number }}
+ name {{ vlan.vlan_name }}
+{% endfor %}
+
+# SVI config
+{% for vlan in vlans %}
+interface vlan {{ vlan.vlan_number }} 
+ ip address {{ vlan.vlan_ip }} {{ vlan.vlan_mask }}
+ description SVI for {{ vlan.vlan_name }}
+{% endfor %}
+
+# OSPF Config
+ospf 1
+ passive-interface default
+ router-id {{ lb0_ip }}
+ {% for uplink in uplinks %}
+ no passive-interface {{ uplink.uplink_port }}
+ {% endfor %}
+ {% for ip in vlans %}
+ network {{ ip.vlan_ip }} 255.255.255.255
+ {% endfor %}
+
+# NTP Config
+ntp logging
+ntp source mgmt0
+ntp authentication-key 1991 md5 iamanntppassword4sure!
+ntp trusted-key 1991
+ntp authenticate
+{% for server in ntp_servers %}
+ntp server {{ server }} key 1991
+{% endfor %}
+
+# SNMP Info Config
+snmp-server location {{ location }}
+snmp-server contact {{ contact }}
+snmp-server ifindex persist
+snmp-server chassis-id {{ asset_tag }}
+
+{% for server in syslog_servers %}
+logging host {{ server }}
+{% endfor %}

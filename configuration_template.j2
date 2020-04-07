@@ -1,16 +1,16 @@
-# Config for {{ item.hostname }}
-hostname {{ item.hostname|upper }}
+# hostname
+hostname {{ hostname|upper }}
 
 # loopback config
 interface loopback0
- ip address {{ item.lb0_ip }} {{ item.lb0_mask }}
+ ip address {{ lb0_ip }} {{ lb0_mask }}
 
 # OOB management config
 interface mgmt0
- ip address {{ item.mgmt_ip }} {{ item.mgmt_mask }}
+ ip address {{ mgmt_ip }} {{ mgmt_mask }}
 
 # Uplink config
-{% for uplink in item.uplinks %}
+{% for uplink in uplinks %}
 interface {{ uplink.uplink_port }}
  description {{ uplink.uplink_spine_switch|upper }} port {{ uplink.uplink_spine_port }}
  no switchport
@@ -18,26 +18,26 @@ interface {{ uplink.uplink_port }}
 {% endfor %}
 
 # vlan config
-{% for vlan in item.vlans %}
+{% for vlan in vlans %}
 vlan {{ vlan.vlan_number }}
- name {{ vlan_vlan_name }}
+ name {{ vlan.vlan_name }}
 {% endfor %}
 
 # SVI config
-{% for item in item.vlans %}
-interface vlan {{ item.number }} 
- ip address {{ item.vlan_ip }} {{ item.vlan_mask }}
- description SVI for {{ item.vlan_name }}
+{% for vlan in vlans %}
+interface vlan {{ vlan.vlan_number }} 
+ ip address {{ vlan.vlan_ip }} {{ vlan.vlan_mask }}
+ description SVI for {{ vlan.vlan_name }}
 {% endfor %}
 
 # OSPF Config
 ospf 1
  passive-interface default
- router-id {{ item.lb0_ip }}
- {% for uplink in item.uplinks %}
+ router-id {{ lb0_ip }}
+ {% for uplink in uplinks %}
  no passive-interface {{ uplink.uplink_port }}
  {% endfor %}
- {% for ip in item.vlans %}
+ {% for ip in vlans %}
  network {{ ip.vlan_ip }} 255.255.255.255
  {% endfor %}
 
@@ -47,16 +47,16 @@ ntp source mgmt0
 ntp authentication-key 1991 md5 iamanntppassword4sure!
 ntp trusted-key 1991
 ntp authenticate
-{% for server in general.ntp_servers %}
+{% for server in ntp_servers %}
 ntp server {{ server }} key 1991
 {% endfor %}
 
 # SNMP Info Config
-snmp-server location {{ item.location }}
-snmp-server contact {{ item.contact }}
+snmp-server location {{ location }}
+snmp-server contact {{ contact }}
 snmp-server ifindex persist
-snmp-server chassis-id {{ item.asset_tag }}
+snmp-server chassis-id {{ asset_tag }}
 
-{% for server in general.syslog_servers %}
+{% for server in syslog_servers %}
 logging host {{ server }}
 {% endfor %}
