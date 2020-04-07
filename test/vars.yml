@@ -1,6 +1,6 @@
 ---
 # vars file for gen-config
-hostname: Leaf101
+hostname: leaf101
 profile: leaf
 lb0_ip: 10.0.0.101
 lb0_mask: 255.255.255.255
