@@ -1,0 +1,13 @@
+- name: testing
+  gather_facts: false
+  hosts: localhost
+  vars_files:
+    - config_variables.yml
+
+  tasks:
+    - name: generate leaf config
+      template: 
+        src=config_template.j2
+        dest={{ item.switch.hostname|lower }}.cfg
+      delegate_to: localhost
+      with_items: "{{ switches }}"

@@ -1,0 +1,65 @@
+# hostname
+hostname {{ item.switch.hostname|upper }}
+
+# loopback config
+interface loopback0
+ ip address {{ item.switch.lb0_ip }} {{ item.switch.lb0_mask }}
+
+# OOB management config
+interface mgmt0
+ ip address {{ item.switch.mgmt_ip }} {{ item.switch.mgmt_mask }}
+
+# Uplink config
+{% for uplink in item.switch.uplinks %}
+interface {{ uplink.uplink_port }}
+ description {{ uplink.uplink_spine_switch|upper }} port {{ uplink.uplink_spine_port }}
+ no switchport
+ ip address {{ uplink.uplink_ip }} {{ uplink.uplink_mask }}
+{% endfor %}
+
+# vlan config
+{% for vlan in item.switch.vlans %}
+vlan {{ vlan.vlan_number }}
+ name {{ vlan.vlan_name|upper }}
+{% endfor %}
+
+# SVI config
+{% for vlan in item.switch.vlans %}
+interface vlan {{ vlan.vlan_number }} 
+ ip address {{ vlan.vlan_ip }} {{ vlan.vlan_mask }}
+ description SVI for {{ vlan.vlan_name|upper }}
+{% endfor %}
+
+# OSPF Config
+ospf 1
+ passive-interface default
+ router-id {{ item.switch.lb0_ip }}
+{% for uplink in item.switch.uplinks %}
+ no passive-interface {{ uplink.uplink_port }} 
+ network {{ uplink.uplink_ip }} 255.255.255.255 area 0.0.0.0
+{% endfor %}
+{% for ip in item.switch.vlans %}
+ network {{ ip.vlan_ip }} 255.255.255.255 area 0.1.0.1 stub 
+{% endfor %}
+
+# NTP Config
+ntp logging
+ntp source mgmt0
+ntp authentication-key 1991 md5 iamanntppassword4sure!
+ntp trusted-key 1991
+ntp authenticate
+{% for server in item.switch.ntp_servers %}
+ntp server {{ server }} key 1991
+{% endfor %}
+
+# SNMP Info Config
+{% for snmp in item.switch.snmp %}
+snmp-server location {{ snmp.location|upper }}
+snmp-server contact {{ snmp.contact|upper }}
+snmp-server ifindex persist
+snmp-server chassis-id {{ snmp.asset_tag|upper }}
+{% endfor %}
+
+{% for server in item.switch.syslog_servers %}
+logging host {{ server }}
+{% endfor %}

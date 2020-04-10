@@ -1,0 +1,10 @@
+- name: testing
+  gather_facts: false
+  hosts: localhost
+  vars_files:
+    - cinfig_variables.yml
+
+  tasks:
+    - debug:
+        msg: "{{ item.switch.routing }}"
+      with_items: "{{ switches }}"

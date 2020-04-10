@@ -1,0 +1,7 @@
+localhost ansible_connection=local
+
+[switches]
+leaf101
+leaf102
+leaf103
+leaf104
