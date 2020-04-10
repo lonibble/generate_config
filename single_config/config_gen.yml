@@ -3,11 +3,11 @@
   gather_facts: false
   hosts: localhost
   vars_files:
-    - leaf101_var.yml
+    - config_variables.yml
 
   tasks:
     - name: generate leaf config
       template: 
-        src=configuration_template.j2
+        src=config_template.j2
         dest={{ hostname }}.cfg
       delegate_to: localhost
