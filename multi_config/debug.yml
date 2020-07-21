@@ -2,7 +2,7 @@
   gather_facts: false
   hosts: localhost
   vars_files:
-    - cinfig_variables.yml
+    - config_variables.yml
 
   tasks:
     - debug:
